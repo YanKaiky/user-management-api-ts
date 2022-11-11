@@ -1,9 +1,13 @@
 import express from 'express';
+import { router } from './src/routes';
+import 'dotenv/config';
+
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 
-app.get('/', (_, response) => response.send({ datetime: new Date().toLocaleString('pt-BR') }));
+app.use(express.json());
 
-const PORT = process.env.PORT || 5000;
+app.use(router);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
