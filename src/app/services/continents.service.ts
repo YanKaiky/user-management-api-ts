@@ -10,13 +10,9 @@ const schema: yup.SchemaOf<IDataContinent> = yup.object().shape({
 
 class ContinentsService {
   create = async (payload: IDataContinent) => {
-    try {
-      const validation = schema.validate(payload);
+    const validation = schema.validate(payload);
 
-      return validation;
-    } catch (error) {
-      return error as yup.ValidationError;
-    }
+    return validation;
   };
 }
 
