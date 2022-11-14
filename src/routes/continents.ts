@@ -5,13 +5,13 @@ const router = express.Router();
 
 router.post('/', ContinentsController.create);
 
-// router.get('/', ContinentsController.getAllContinents);
+router.get('/', ContinentsController.getAll);
 
-// router.get('/:guid', ContinentsController.getContinentByGuid);
+router.get('/:guid', ContinentsController.getByGuid);
 
-// router.put('/:guid', ContinentsController.updateContinent);
+router.put('/:guid', ContinentsController.update);
 
-// router.delete('/:guid', ContinentsController.deleteContinent);
+router.delete('/:guid', ContinentsController.delete);
 
 export default router;
 

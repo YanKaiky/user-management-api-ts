@@ -21,6 +21,63 @@ class ContinentsService {
 
     return continent;
   };
+
+  getAll = async () => {
+    const continents = await prisma.continents.findMany({});
+
+    return continents;
+  };
+
+  getByGuid = async (guid: string) => {
+    const continent = await prisma.continents.findUnique({
+      where: {
+        guid
+      }
+    });
+
+    if (!continent) return { message: 'CONTINENT_NOT_FOUND' };
+
+    return continent;
+  };
+
+  update = async (guid: string, payload: IDataContinent) => {
+    const continent = await prisma.continents.findUnique({
+      where: {
+        guid
+      }
+    });
+
+    if (!continent) return { message: 'CONTINENT_NOT_FOUND' };
+
+    const validation = await schema.validate(payload);
+
+    const updateContinent = await prisma.continents.update({
+      where: {
+        guid
+      },
+      data: validation,
+    });
+
+    return updateContinent;
+  };
+
+  delete = async (guid: string) => {
+    const continent = await prisma.continents.findUnique({
+      where: {
+        guid
+      }
+    });
+
+    if (!continent) return { message: 'CONTINENT_NOT_FOUND' };
+
+    await prisma.continents.delete({
+      where: {
+        guid
+      },
+    });
+
+    return true;
+  };
 }
 
 export default new ContinentsService();
