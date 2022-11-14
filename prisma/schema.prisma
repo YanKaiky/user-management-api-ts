@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  guid       String   @id @unique() @default(uuid()) @db.Uuid
+  name       String
+  last_name  String?
+  password   String?
+  email      String   @unique
+  cpf        String
+  birth_date DateTime
+  city_guid  String   @db.Uuid
+  city       Cities   @relation(fields: [city_guid], references: [guid])
+  updatedAt  DateTime @default(now()) @updatedAt
+  createdAt  DateTime @default(now())
+
+  @@map("users")
+}
+
+model Continents {
+  guid      String      @id @unique() @default(uuid()) @db.Uuid
+  name      String      @unique()
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt
+  Countries Countries[]
+
+  @@map("continents")
+}
+
+model Countries {
+  guid           String     @id @unique() @default(uuid()) @db.Uuid
+  name           String     @unique()
+  continent_guid String     @db.Uuid
+  continent      Continents @relation(fields: [continent_guid], references: [guid])
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @default(now()) @updatedAt
+  States         States[]
+
+  @@map("countries")
+}
+
+model States {
+  guid         String    @id @unique() @default(uuid()) @db.Uuid
+  name         String
+  uf           String
+  country_guid String    @db.Uuid
+  country      Countries @relation(fields: [country_guid], references: [guid])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @default(now()) @updatedAt
+  Cities       Cities[]
+
+  @@map("states")
+}
+
+model Cities {
+  guid       String   @id @unique() @default(uuid()) @db.Uuid
+  name       String
+  state_guid String   @db.Uuid
+  state      States   @relation(fields: [state_guid], references: [guid])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+  Users      Users[]
+
+  @@map("cities")
+}

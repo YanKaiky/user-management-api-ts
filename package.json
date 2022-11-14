@@ -8,10 +8,14 @@
     "build": "npx tsc",
     "start": "node app.js"
   },
+  "prisma": {
+    "seed": "node prisma/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^4.6.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "yup": "^0.32.11"
