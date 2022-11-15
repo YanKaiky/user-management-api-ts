@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import * as yup from 'yup';
+import Sort from '../utils/sort';
 
 const prisma = new PrismaClient();
 
@@ -24,6 +25,8 @@ class ContinentsService {
 
   getAll = async () => {
     const continents = await prisma.continents.findMany({});
+
+    await Sort.name(continents);
 
     return continents;
   };
