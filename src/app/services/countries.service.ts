@@ -42,7 +42,7 @@ class CountriesService {
   };
 
   getAllByContinent = async (continent_guid: string) => {
-    const continent = await prisma.continents.findMany({
+    const continent = await prisma.continents.findUnique({
       where: {
         guid: continent_guid,
       },
