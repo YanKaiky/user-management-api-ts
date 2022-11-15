@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import * as yup from 'yup';
 import Sort from '../utils/sort';
+import ContinentsService from './continents.service';
 
 const prisma = new PrismaClient();
 
@@ -16,11 +17,7 @@ interface IDataCountry {
 
 class CountriesService {
   create = async (payload: IDataCountry) => {
-    const continent = await prisma.continents.findUnique({
-      where: {
-        guid: payload.continent_guid
-      }
-    });
+    const continent = await ContinentsService.getByGuid(payload.continent_guid);
 
     if (!continent) return { message: 'CONTINENT_NOT_FOUND' };
 
@@ -42,11 +39,7 @@ class CountriesService {
   };
 
   getAllByContinent = async (continent_guid: string) => {
-    const continent = await prisma.continents.findUnique({
-      where: {
-        guid: continent_guid,
-      },
-    });
+    const continent = await ContinentsService.getByGuid(continent_guid);
 
     if (!continent) return { message: 'CONTINENT_NOT_FOUND' };
 
@@ -80,11 +73,7 @@ class CountriesService {
 
     if (!country) return { message: 'COUNTRY_NOT_FOUND' };
 
-    const continent = await prisma.continents.findUnique({
-      where: {
-        guid: payload.continent_guid
-      }
-    });
+    const continent = await ContinentsService.getByGuid(payload.continent_guid);
 
     if (!continent) return { message: 'CONTINENT_NOT_FOUND' };
 
