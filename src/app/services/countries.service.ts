@@ -79,14 +79,14 @@ class CountriesService {
 
     const validation = await schema.validate(payload);
 
-    const updateContinent = await prisma.countries.update({
+    const updateCountry = await prisma.countries.update({
       where: {
         guid
       },
       data: validation,
     });
 
-    return updateContinent;
+    return updateCountry;
   };
 
   delete = async (guid: string) => {

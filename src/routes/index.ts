@@ -2,6 +2,7 @@ import { Router } from 'express';
 import continents from './continents';
 import countries from './countries';
 import states from './states';
+import cities from './cities';
 
 const router = Router();
 
@@ -12,5 +13,7 @@ router.use('/continents', continents);
 router.use('/countries', countries);
 
 router.use('/states', states);
+
+router.use('/cities', cities);
 
 export { router };

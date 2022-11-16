@@ -5,20 +5,20 @@ import CountriesService from './countries.service';
 
 const prisma = new PrismaClient();
 
-const schema: yup.SchemaOf<IDataCountry> = yup.object().shape({
+const schema: yup.SchemaOf<IDataState> = yup.object().shape({
   name: yup.string().required().min(3),
   uf: yup.string().required().length(2),
   country_guid: yup.string().required().uuid(),
 });
 
-interface IDataCountry {
+interface IDataState {
   name: string;
   uf: string;
   country_guid: string;
 }
 
 class StatesService {
-  create = async (payload: IDataCountry) => {
+  create = async (payload: IDataState) => {
     const continent = await CountriesService.getByGuid(payload.country_guid);
 
     if (!continent) return { message: 'COUNTRY_NOT_FOUND' };
@@ -61,34 +61,34 @@ class StatesService {
       }
     });
 
-    if (!state) return { message: 'COUNTRY_NOT_FOUND' };
+    if (!state) return { message: 'STATE_NOT_FOUND' };
 
     return state;
   };
 
-  update = async (guid: string, payload: IDataCountry) => {
+  update = async (guid: string, payload: IDataState) => {
     const state = await prisma.states.findUnique({
       where: {
         guid
       }
     });
 
-    if (!state) return { message: 'COUNTRY_NOT_FOUND' };
+    if (!state) return { message: 'STATE_NOT_FOUND' };
 
-    const continent = await CountriesService.getByGuid(payload.country_guid);
+    const country = await CountriesService.getByGuid(payload.country_guid);
 
-    if (!continent) return { message: 'COUNTRY_NOT_FOUND' };
+    if (!country) return { message: 'COUNTRY_NOT_FOUND' };
 
     const validation = await schema.validate(payload);
 
-    const updateContinent = await prisma.states.update({
+    const updateState = await prisma.states.update({
       where: {
         guid
       },
       data: validation,
     });
 
-    return updateContinent;
+    return updateState;
   };
 
   delete = async (guid: string) => {
@@ -98,7 +98,7 @@ class StatesService {
       }
     });
 
-    if (!state) return { message: 'COUNTRY_NOT_FOUND' };
+    if (!state) return { message: 'STATE_NOT_FOUND' };
 
     await prisma.states.delete({
       where: {
