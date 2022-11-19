@@ -1,17 +1,18 @@
 import express from 'express';
 import CitiesController from '../app/controllers/cities.controller';
+import auth from '../app/middlewares/auth.middleware';
 
 const router = express.Router();
 
-router.post('/', CitiesController.create);
+router.post('/', auth, CitiesController.create);
 
-router.get('/', CitiesController.getAll);
+router.get('/', auth, CitiesController.getAll);
 
-router.get('/:guid', CitiesController.getByGuid);
+router.get('/:guid', auth, CitiesController.getByGuid);
 
-router.put('/:guid', CitiesController.update);
+router.put('/:guid', auth, CitiesController.update);
 
-router.delete('/:guid', CitiesController.delete);
+router.delete('/:guid', auth, CitiesController.delete);
 
 export default router;
 

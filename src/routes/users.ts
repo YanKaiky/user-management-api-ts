@@ -1,17 +1,18 @@
 import express from 'express';
 import UsersController from '../app/controllers/users.controller';
+import auth from '../app/middlewares/auth.middleware';
 
 const router = express.Router();
 
 router.post('/', UsersController.create);
 
-router.get('/', UsersController.getAll);
+router.get('/', auth, UsersController.getAll);
 
-router.get('/:guid', UsersController.getByGuid);
+router.get('/:guid', auth, UsersController.getByGuid);
 
-router.put('/:guid', UsersController.update);
+router.put('/:guid', auth, UsersController.update);
 
-router.delete('/:guid', UsersController.delete);
+router.delete('/:guid', auth, UsersController.delete);
 
 export default router;
 

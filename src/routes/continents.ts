@@ -1,17 +1,18 @@
 import express from 'express';
 import ContinentsController from '../app/controllers/continents.controller';
+import auth from '../app/middlewares/auth.middleware';
 
 const router = express.Router();
 
-router.post('/', ContinentsController.create);
+router.post('/', auth, ContinentsController.create);
 
-router.get('/', ContinentsController.getAll);
+router.get('/', auth, ContinentsController.getAll);
 
-router.get('/:guid', ContinentsController.getByGuid);
+router.get('/:guid', auth, ContinentsController.getByGuid);
 
-router.put('/:guid', ContinentsController.update);
+router.put('/:guid', auth, ContinentsController.update);
 
-router.delete('/:guid', ContinentsController.delete);
+router.delete('/:guid', auth, ContinentsController.delete);
 
 export default router;
 
