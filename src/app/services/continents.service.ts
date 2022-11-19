@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import createHttpError from 'http-errors';
 import * as yup from 'yup';
 import Sort from '../utils/sort';
 
@@ -38,7 +39,7 @@ class ContinentsService {
       }
     });
 
-    if (!continent) return { message: 'CONTINENT_NOT_FOUND' };
+    if (!continent) throw createHttpError.NotFound('CONTINENT_NOT_FOUND');
 
     return continent;
   };
@@ -50,7 +51,7 @@ class ContinentsService {
       }
     });
 
-    if (!continent) return { message: 'CONTINENT_NOT_FOUND' };
+    if (!continent) throw createHttpError.NotFound('CONTINENT_NOT_FOUND');
 
     const validation = await schema.validate(payload);
 
@@ -71,7 +72,7 @@ class ContinentsService {
       }
     });
 
-    if (!continent) return { message: 'CONTINENT_NOT_FOUND' };
+    if (!continent) throw createHttpError.NotFound('CONTINENT_NOT_FOUND');
 
     await prisma.continents.delete({
       where: {

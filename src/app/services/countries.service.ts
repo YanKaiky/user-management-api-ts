@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import createHttpError from 'http-errors';
 import * as yup from 'yup';
 import Sort from '../utils/sort';
 import ContinentsService from './continents.service';
@@ -19,7 +20,7 @@ class CountriesService {
   create = async (payload: IDataCountry) => {
     const continent = await ContinentsService.getByGuid(payload.continent_guid);
 
-    if (!continent) return { message: 'CONTINENT_NOT_FOUND' };
+    if (!continent) throw createHttpError.NotFound('CONTINENT_NOT_FOUND');
 
     const validation = await schema.validate(payload);
 
@@ -33,15 +34,28 @@ class CountriesService {
   getAll = async () => {
     const countries = await prisma.countries.findMany({});
 
-    await Sort.name(countries);
+    const payload = [];
 
-    return countries;
+    for (const country of countries) {
+      const continent = await ContinentsService.getByGuid(country.continent_guid);
+
+      const data = {
+        ...country,
+        continent: continent.name,
+      };
+
+      payload.push(data);
+    }
+
+    await Sort.name(payload);
+
+    return payload;
   };
 
   getAllByContinent = async (continent_guid: string) => {
     const continent = await ContinentsService.getByGuid(continent_guid);
 
-    if (!continent) return { message: 'CONTINENT_NOT_FOUND' };
+    if (!continent) throw createHttpError.NotFound('CONTINENT_NOT_FOUND');
 
     const countries = await prisma.countries.findMany({
       where: {
@@ -59,7 +73,7 @@ class CountriesService {
       }
     });
 
-    if (!country) return { message: 'COUNTRY_NOT_FOUND' };
+    if (!country) throw createHttpError.NotFound('COUNTRY_NOT_FOUND');
 
     return country;
   };
@@ -71,11 +85,11 @@ class CountriesService {
       }
     });
 
-    if (!country) return { message: 'COUNTRY_NOT_FOUND' };
+    if (!country) throw createHttpError.NotFound('COUNTRY_NOT_FOUND');
 
     const continent = await ContinentsService.getByGuid(payload.continent_guid);
 
-    if (!continent) return { message: 'CONTINENT_NOT_FOUND' };
+    if (!continent) throw createHttpError.NotFound('CONTINENT_NOT_FOUND');
 
     const validation = await schema.validate(payload);
 
@@ -96,7 +110,7 @@ class CountriesService {
       }
     });
 
-    if (!country) return { message: 'COUNTRY_NOT_FOUND' };
+    if (!country) throw createHttpError.NotFound('COUNTRY_NOT_FOUND');
 
     await prisma.countries.delete({
       where: {

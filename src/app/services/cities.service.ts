@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client';
+import createHttpError from 'http-errors';
 import * as yup from 'yup';
 import Sort from '../utils/sort';
+import CountriesService from './countries.service';
 import StatesService from './states.service';
 
 const prisma = new PrismaClient();
@@ -19,7 +21,7 @@ class CitiesService {
   create = async (payload: IDataCity) => {
     const state = await StatesService.getByGuid(payload.state_guid);
 
-    if (!state) return { message: 'STATE_NOT_FOUND' };
+    if (!state) throw createHttpError.NotFound('STATE_NOT_FOUND');
 
     const validation = await schema.validate(payload);
 
@@ -33,15 +35,31 @@ class CitiesService {
   getAll = async () => {
     const cities = await prisma.cities.findMany({});
 
-    await Sort.name(cities);
+    const payload = [];
 
-    return cities;
+    for (const city of cities) {
+      const state = await StatesService.getByGuid(city.state_guid);
+
+      const country = await CountriesService.getByGuid(state.country_guid);
+
+      const data = {
+        ...city,
+        state: state.name,
+        country: country.name,
+      };
+
+      payload.push(data);
+    }
+
+    await Sort.name(payload);
+
+    return payload;
   };
 
   getAllByState = async (state_guid: string) => {
     const state = await StatesService.getByGuid(state_guid);
 
-    if (!state) return { message: 'STATE_NOT_FOUND' };
+    if (!state) throw createHttpError.NotFound('STATE_NOT_FOUND');
 
     const cities = await prisma.cities.findMany({
       where: {
@@ -59,7 +77,7 @@ class CitiesService {
       }
     });
 
-    if (!city) return { message: 'CITY_NOT_FOUND' };
+    if (!city) throw createHttpError.NotFound('CITY_NOT_FOUND');
 
     return city;
   };
@@ -71,11 +89,11 @@ class CitiesService {
       }
     });
 
-    if (!city) return { message: 'CITY_NOT_FOUND' };
+    if (!city) throw createHttpError.NotFound('CITY_NOT_FOUND');
 
     const state = await StatesService.getByGuid(payload.state_guid);
 
-    if (!state) return { message: 'STATE_NOT_FOUND' };
+    if (!state) throw createHttpError.NotFound('STATE_NOT_FOUND');
 
     const validation = await schema.validate(payload);
 
@@ -96,7 +114,7 @@ class CitiesService {
       }
     });
 
-    if (!city) return { message: 'CITY_NOT_FOUND' };
+    if (!city) throw createHttpError.NotFound('CITY_NOT_FOUND');
 
     await prisma.cities.delete({
       where: {
