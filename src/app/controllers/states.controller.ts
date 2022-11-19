@@ -42,9 +42,9 @@ class StatesController {
   async getByGuid(request: Request, response: Response) {
     const guid = request.params.guid;
 
-    const states = await StatesService.getByGuid(guid);
+    const state = await StatesService.getByGuid(guid);
 
-    response.status(200).json(states);
+    response.status(200).json(state);
   }
 
   async update(request: Request, response: Response) {

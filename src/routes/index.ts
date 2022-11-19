@@ -3,6 +3,7 @@ import continents from './continents';
 import countries from './countries';
 import states from './states';
 import cities from './cities';
+import users from './users';
 
 const router = Router();
 
@@ -15,5 +16,7 @@ router.use('/countries', countries);
 router.use('/states', states);
 
 router.use('/cities', cities);
+
+router.use('/users', users);
 
 export { router };
